@@ -3,7 +3,7 @@ package com.ood.OODPro.Config;
 
 
 import com.ood.OODPro.Constants.Constants;
-import com.ood.OODPro.Services.UserDetailService;
+import com.ood.OODPro.Services.JwtUserDetailService;
 import com.ood.OODPro.Utils.JwtTokenUtil;
 import com.ood.OODPro.pojo.UserDetailsPojo;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -32,54 +30,41 @@ public class JwtRequestFilter extends OncePerRequestFilter
 {
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private JwtTokenUtil jwtUtils;
 
     @Autowired
-    private UserDetailService jwtUserDetailsService;
+    private JwtUserDetailService jwtUserDetailsService;
 
 
 
-    @SneakyThrows
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        try {
+            String jwt = parseJwt(request);
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-        final String requestTokenHeader = request.getHeader("Authorization");
+                UserDetailsPojo userDetails = jwtUserDetailsService.loadUserByUsername(username);
 
-        String jwtToken = null;
-        String username = null;
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails,
+                                null,
+                                userDetails.getAuthorities());
 
-        // JWT Token is in the form "Bearer token". Remove Bearer word and get
-        // only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
-            try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            } catch (IllegalArgumentException e) {
-                log.error("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                log.error("JWT Token has expired");
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        }  //            log.warn("JWT Token does not begin with Bearer String");
-
-        // Once we get the token validate it.
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null)
-        {
-            UserDetailsPojo userDetailsPojo = this.jwtUserDetailsService.loadUserByUsername(username);
-            if (jwtTokenUtil.validateToken(jwtToken, userDetailsPojo))
-            {
-                System.out.println("--------------validated--------------"+ userDetailsPojo);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        userDetailsPojo, null
-                        ,userDetailsPojo.getAuthorities());
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                auth.setAuthenticated(true);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-                request.setAttribute(Constants.USER_OBJECT_STRING, userDetailsPojo);
-//                System.out.println("--------------validated-out-------------");
-            }
+        } catch (Exception e) {
+            logger.error("Cannot set user authentication: {}", e);
         }
-        chain.doFilter(request, response);
+
+        filterChain.doFilter(request, response);
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String jwt = jwtUtils.getJwtFromCookies(request);
+        return jwt;
     }
 }

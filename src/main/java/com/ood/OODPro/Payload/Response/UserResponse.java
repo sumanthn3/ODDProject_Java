@@ -5,21 +5,21 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class SignInResponse {
-    private Long id;
+public class UserResponse {
+    private Integer id;
     private String phoneNumber;
     private String emailId;
 
     private String fullName;
 
-    private String token;
 
-    public SignInResponse(Long id, String phoneNumber, String emailId, String fullName,String token) {
+
+    public UserResponse(Integer id, String phoneNumber, String emailId, String fullName) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.emailId = emailId;
         this.fullName = fullName;
-        this.token = token;
+
     }
 
 

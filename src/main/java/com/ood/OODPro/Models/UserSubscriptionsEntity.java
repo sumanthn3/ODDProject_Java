@@ -9,13 +9,9 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "phone_number"),
-                @UniqueConstraint(columnNames = "email_id")
-        })
+@Table(name = "users_subscriptions")
 @Data
-public class UserEntity {
+public class UserSubscriptionsEntity {
 
 
     @Id
@@ -23,20 +19,8 @@ public class UserEntity {
     @Column(name = "id")
 	private Integer id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "email_id", unique = true)
-    private String emailId;
-
-    @Column(name = "phone_number", unique = true)
-
-    private String phoneNumber;
-
-    @Column(name = "password")
-    private String password;
-
-
+    @Column(name = "subscription_name")
+    private String subscriptionName;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -45,8 +29,5 @@ public class UserEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
-
-
 
 }

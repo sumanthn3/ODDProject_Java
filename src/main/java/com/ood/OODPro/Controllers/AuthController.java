@@ -6,6 +6,7 @@ import com.ood.OODPro.Payload.Request.SignupRequest;
 import com.ood.OODPro.Payload.Response.SignInResponse;
 import com.ood.OODPro.Payload.Response.SignupResponse;
 import com.ood.OODPro.Utils.JwtTokenUtil;
+import com.ood.OODPro.pojo.UserDetailsPojo;
 import com.ood.OODPro.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +18,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired(required = false)
 	AuthenticationManager authenticationManager;
@@ -34,43 +33,45 @@ public class AuthController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	@Autowired
+	JwtTokenUtil jwtUtils;
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequest signinRequest) {
 		System.out.println("triggered sigin api");
 
 		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(SigninRequest.getEmail(), SigninRequest.getPassword()));
+				.authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getEmailId(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		UserDetailsService userDetails = (UserDetailsService) authentication.getPrincipal();
+		UserDetailsPojo userDetails = (UserDetailsPojo) authentication.getPrincipal();
 
-		ResponseCookie jwtCookie = JwtTokenUtil.getUsernameFromToken(userDetails);
+		ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-				.body(new SignInResponse(userDetails.getPhone(),
-						userDetails.getUsername(),
-						userDetails.getEmail()
-						));
-		return "Welcome to Springboot";
-		
+				.body(new SignInResponse(userDetails.getId(), userDetails.getEmailId(),
+						userDetails.getPhoneNumber(), userDetails.getFullName(), jwtCookie.getValue()));
+
 	}
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		System.out.println("triggered signup api");
+		System.out.println("triggered signup api with body: " + signUpRequest.toString());
 		if (userRepository.existsByPhoneNumber(signUpRequest.getPhoneNumber())) {
 			return ResponseEntity.badRequest().body(new SignupResponse("Error: PhoneNumber is already registered!"));
 		}
 
-		if (userRepository.existsByEmail(signUpRequest.getEmailId())) {
+		if (userRepository.existsByEmailId(signUpRequest.getEmailId())) {
 			return ResponseEntity.badRequest().body(new SignupResponse("Error: Email is already in use!"));
 		}
 
 		// Create new user's account
-		UserEntity user = new UserEntity(signUpRequest.getPhoneNumber(),
-				signUpRequest.getEmailId(),
-				encoder.encode(signUpRequest.getPassword()));
+		UserEntity user = new UserEntity();
+		user.setName(signUpRequest.getFullName());
+		user.setEmailId(signUpRequest.getEmailId());
+		user.setPhoneNumber(signUpRequest.getPhoneNumber());
+
+		user.setPassword(encoder.encode(signUpRequest.getPassword()));
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new SignupResponse("User registered successfully!"));

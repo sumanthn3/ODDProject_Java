@@ -20,8 +20,12 @@ public class UserDetailsPojo extends User {
 
 
     public UserDetailsPojo(String phoneNumber,
-                           String emailId, String fullName,String password) {
-        super(phoneNumber,emailId,fullName, "password");
+                           String emailId,
+                           String fullName,
+                           String password,
+                           Collection<? extends GrantedAuthority> authorities
+    ) {
+        super(emailId, "password", authorities);
 
         this.phoneNumber = phoneNumber;
         this.fullName = fullName;
