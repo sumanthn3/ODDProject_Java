@@ -35,7 +35,10 @@ public class AuthController {
 
 	@Autowired
 	JwtTokenUtil jwtUtils;
+
+
 	@PostMapping("/signin")
+	@CrossOrigin(origins = "http://localhost:8100")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequest signinRequest) {
 		System.out.println("triggered sigin api");
 
@@ -55,6 +58,7 @@ public class AuthController {
 
 	}
 	@PostMapping("/signup")
+	@CrossOrigin(origins = "http://localhost:8100")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		System.out.println("triggered signup api with body: " + signUpRequest.toString());
 		if (userRepository.existsByPhoneNumber(signUpRequest.getPhoneNumber())) {
