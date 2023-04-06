@@ -14,7 +14,7 @@ public class SignInResponse {
 
     private String token;
 
-    public SignInResponse(Long id, String phoneNumber, String emailId, String fullName,String token) {
+    public SignInResponse(Long id, String emailId, String phoneNumber, String fullName,String token) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.emailId = emailId;
