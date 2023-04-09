@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -47,19 +49,20 @@ public class ExpenseController {
         String id = jwtUtils.getUserNameFromJwtToken(jwtUtils.getJwtFromCookies(request));
 
         System.out.println("id: " + id);
-        Optional<ExpenseEntity> expenseEntity = expenseRepository.findAllByEmailId(id);
+        Iterable<ExpenseEntity> expenseEntities = expenseRepository.findAllByEmailId(id);
+        List<ExpenseListResponse> expenseListResponses = new ArrayList<>();
+        for (ExpenseEntity expenseEntity : expenseEntities) {
+            expenseListResponses.add(new ExpenseListResponse(
+                    expenseEntity.getId(),
+                    expenseEntity.getExpenseName(),
+                    expenseEntity.getExpensePrice(),
+                    expenseEntity.getExpenseDate(),
+                    expenseEntity.getCategory(),
+                    expenseEntity.getDescription()
+            ));
+        }
+        return ResponseEntity.ok().body(expenseListResponses);
 
-        System.out.println(expenseEntity.get());
-
-//        return ResponseEntity.ok(new NewSubscriptionResponse("Subscriptions retrieved successfully!"));
-        return ResponseEntity.ok()
-                .body(new ExpenseListResponse(expenseEntity.get().getId(),
-                        expenseEntity.get().getExpenseName(),
-                        expenseEntity.get().getExpensePrice(),
-                        expenseEntity.get().getExpenseDate(),
-                        expenseEntity.get().getCategory(),
-                        expenseEntity.get().getDescription()
-                       ));
 
     }
     @PostMapping("/newExpense")

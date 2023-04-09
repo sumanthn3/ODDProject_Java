@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ExpenseRepository extends CrudRepository<ExpenseEntity,Integer> {
     Optional<ExpenseEntity> findOneByEmailIdIgnoreCase(String emailId);
 
-    Optional<ExpenseEntity> findAllByEmailId(String emailId);
+    Iterable<ExpenseEntity> findAllByEmailId(String emailId);
 
     Boolean existsByEmailId(String emaili);
 
