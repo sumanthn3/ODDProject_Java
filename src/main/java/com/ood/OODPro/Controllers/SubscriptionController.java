@@ -27,6 +27,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/subscription")
+@CrossOrigin(origins = "http://localhost:8100")
 public class SubscriptionController {
     @Autowired(required = false)
     AuthenticationManager authenticationManager;
@@ -38,7 +39,7 @@ public class SubscriptionController {
     JwtTokenUtil jwtUtils;
 
     @GetMapping("/getSubscriptions")
-    @CrossOrigin(origins = "http://localhost:8100")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         System.out.println("triggered get subscriptions api"+request.getCookies());
 
@@ -50,7 +51,6 @@ public class SubscriptionController {
         System.out.println(userSubscriptionsEntity.get());
 
 //        return ResponseEntity.ok(new NewSubscriptionResponse("Subscriptions retrieved successfully!"));
-
         return ResponseEntity.ok()
                 .body(new SubscriptionResponse(userSubscriptionsEntity.get().getId(),
                         userSubscriptionsEntity.get().getSubscriptionName(),
