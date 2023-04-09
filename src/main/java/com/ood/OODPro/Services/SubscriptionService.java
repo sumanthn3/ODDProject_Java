@@ -19,13 +19,13 @@ public class SubscriptionService {
     @Autowired(required = false)
     SubscriptionRespository subscriptionRespository;
 
-    public UserSubscriptionsEntity getUserEntityWithEmail(String email) throws ApiException {
-        log.info("getUserEntityWithEmail --> {}", email);
-        Optional<UserSubscriptionsEntity> adminEntityOptional = subscriptionRespository.findAllByEmailId(email);
-        if (!adminEntityOptional.isPresent()) {
-            log.error(Constants.USER_DOES_NOT_EXISTS);
-            throw new ApiException(Constants.USER_DOES_NOT_EXISTS, HttpStatus.BAD_REQUEST);
-        }
-        return adminEntityOptional.get();
-    }
+//    public UserSubscriptionsEntity getUserEntityWithEmail(String email) throws ApiException {
+//        log.info("getUserEntityWithEmail --> {}", email);
+//        Iterable<UserSubscriptionsEntity> adminEntityOptional = subscriptionRespository.findAllByEmailId(email);
+//        if (!adminEntityOptional.iterator().hasNext()) {
+//            log.error(Constants.USER_DOES_NOT_EXISTS);
+//            throw new ApiException(Constants.USER_DOES_NOT_EXISTS, HttpStatus.BAD_REQUEST);
+//        }
+//        return adminEntityOptional.get();
+//    }
 }

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.*;
@@ -46,23 +48,26 @@ public class SubscriptionController {
         String id = jwtUtils.getUserNameFromJwtToken(jwtUtils.getJwtFromCookies(request));
 
         System.out.println("id: " + id);
-        Optional<UserSubscriptionsEntity> userSubscriptionsEntity = subscriptionRespository.findAllByEmailId(id);
+        Iterable<UserSubscriptionsEntity> userSubscriptionsEntity = subscriptionRespository.findAllByEmailId(id);
 
-        System.out.println(userSubscriptionsEntity.get());
+        List<SubscriptionResponse> subscriptionResponses = new ArrayList<>();
+        for (UserSubscriptionsEntity entity : userSubscriptionsEntity) {
+            subscriptionResponses.add(new SubscriptionResponse(
+                    entity.getId(),
+                    entity.getSubscriptionName(),
+                    entity.getSubscriptionPrice(),
+                    entity.getBillingCycle(),
+                    entity.getBillingDate(),
+                    entity.getSendReminder(),
+                    entity.getNote()
+            ));
+        }
+        return ResponseEntity.ok().body(subscriptionResponses);
 
-//        return ResponseEntity.ok(new NewSubscriptionResponse("Subscriptions retrieved successfully!"));
-        return ResponseEntity.ok()
-                .body(new SubscriptionResponse(userSubscriptionsEntity.get().getId(),
-                        userSubscriptionsEntity.get().getSubscriptionName(),
-                        userSubscriptionsEntity.get().getSubscriptionPrice(),
-                        userSubscriptionsEntity.get().getBillingCycle(),
-                        userSubscriptionsEntity.get().getBillingDate(),
-                         userSubscriptionsEntity.get().getSendReminder()
-                        , userSubscriptionsEntity.get().getNote()));
 
     }
     @PostMapping("/newSubscription")
-    @CrossOrigin(origins = "http://localhost:8100")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> newSubscription(@Valid @RequestBody AddSubscription addSubscription) {
         System.out.println("triggered new subscription api");
 
