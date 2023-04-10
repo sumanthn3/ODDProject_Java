@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/category")
-@CrossOrigin(origins = "http://localhost:8100")
+@CrossOrigin(origins = "http://localhost:8101")
 public class CategoryController {
     @Autowired(required = false)
     AuthenticationManager authenticationManager;
@@ -40,7 +40,7 @@ public class CategoryController {
     JwtTokenUtil jwtUtils;
 
     @GetMapping("/getAllCategories")
-    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         System.out.println("triggered  getAllCategories api"+request.getCookies());
 
