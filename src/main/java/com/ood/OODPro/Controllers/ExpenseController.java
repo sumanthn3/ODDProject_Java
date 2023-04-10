@@ -114,6 +114,23 @@ public class ExpenseController {
             return ResponseEntity.notFound().build();
         }
     }
+    @DeleteMapping("/deleteExpense/{id}")
+    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    public ResponseEntity<?> deleteExpense(@PathVariable Integer id) {
+        System.out.println("triggered delete expense api");
+
+        Optional<ExpenseEntity> optionalExpense = expenseRepository.findById(id);
+
+        if (optionalExpense.isPresent()) {
+            ExpenseEntity expense = optionalExpense.get();
+            expenseRepository.delete(expense);
+
+            return ResponseEntity.ok(new NewSubscriptionResponse("Expense Deleted successfully!"));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 }

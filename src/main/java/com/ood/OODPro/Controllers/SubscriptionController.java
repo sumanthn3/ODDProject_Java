@@ -110,5 +110,23 @@ public class SubscriptionController {
         }
     }
 
+    @DeleteMapping("/deleteSubscription/{id}")
+    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    public ResponseEntity<?> deleteSubscription(@PathVariable Integer id) {
+        System.out.println("triggered delete subscription api");
+
+        Optional<UserSubscriptionsEntity> optionalSubscription = subscriptionRespository.findById(id);
+
+        if (optionalSubscription.isPresent()) {
+            UserSubscriptionsEntity subscription = optionalSubscription.get();
+            subscriptionRespository.delete(subscription);
+
+            return ResponseEntity.ok(new NewSubscriptionResponse("Subscription Deleted successfully!"));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }
