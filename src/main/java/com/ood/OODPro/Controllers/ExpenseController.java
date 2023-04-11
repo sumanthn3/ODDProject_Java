@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/expense")
-@CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
 public class ExpenseController {
     @Autowired(required = false)
     AuthenticationManager authenticationManager;
@@ -44,7 +44,7 @@ public class ExpenseController {
     JwtTokenUtil jwtUtils;
 
     @GetMapping("/getExpenses")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         System.out.println("triggered get expenses api"+request.getCookies());
 
@@ -68,7 +68,7 @@ public class ExpenseController {
 
     }
     @PostMapping("/newExpense")
-    @CrossOrigin(origins = "http://localhost:8101",allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100",allowCredentials = "true")
     public ResponseEntity<?> newSubscription(@Valid @RequestBody AddExpense addExpense) {
         System.out.println("triggered new expense api");
 
@@ -94,7 +94,7 @@ public class ExpenseController {
 
     }
     @PutMapping("/updateExpense")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> updateExpense(@Valid @RequestBody UpdateExpense updateExpense) {
         System.out.println("triggered update expense api");
 
@@ -115,7 +115,7 @@ public class ExpenseController {
         }
     }
     @DeleteMapping("/deleteExpense/{id}")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> deleteExpense(@PathVariable Integer id) {
         System.out.println("triggered delete expense api");
 

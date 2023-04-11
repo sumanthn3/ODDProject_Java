@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 public class UpdateSubscription {
-    @NotBlank
+
     private Integer id;
 
     @NotBlank

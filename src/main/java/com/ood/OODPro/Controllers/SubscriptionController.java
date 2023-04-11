@@ -30,7 +30,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/subscription")
-@CrossOrigin(origins = "http://localhost:8101")
+@CrossOrigin(origins = "http://localhost:8100")
 public class SubscriptionController {
     @Autowired(required = false)
     AuthenticationManager authenticationManager;
@@ -42,7 +42,7 @@ public class SubscriptionController {
     JwtTokenUtil jwtUtils;
 
     @GetMapping("/getSubscriptions")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         System.out.println("triggered get subscriptions api"+request.getCookies());
 
@@ -68,7 +68,7 @@ public class SubscriptionController {
 
     }
     @PostMapping("/newSubscription")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> newSubscription(@Valid @RequestBody AddSubscription addSubscription) {
         System.out.println("triggered new subscription api");
 
@@ -88,7 +88,7 @@ public class SubscriptionController {
 
     }
     @PutMapping("/updateSubscription")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> updateSubscription(@Valid @RequestBody UpdateSubscription updateSubscription) {
         System.out.println("triggered update subscription api");
 
@@ -111,7 +111,7 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/deleteSubscription/{id}")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> deleteSubscription(@PathVariable Integer id) {
         System.out.println("triggered delete subscription api");
 
