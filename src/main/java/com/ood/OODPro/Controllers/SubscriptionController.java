@@ -30,7 +30,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/subscription")
-@CrossOrigin(origins = "http://localhost:8101")
+@CrossOrigin(origins = "http://localhost:8100")
 public class SubscriptionController {
     @Autowired(required = false)
     AuthenticationManager authenticationManager;
@@ -42,7 +42,7 @@ public class SubscriptionController {
     JwtTokenUtil jwtUtils;
 
     @GetMapping("/getSubscriptions")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         System.out.println("triggered get subscriptions api"+request.getCookies());
 
@@ -57,10 +57,12 @@ public class SubscriptionController {
                     entity.getId(),
                     entity.getSubscriptionName(),
                     entity.getSubscriptionPrice(),
+                    entity.getCategory(),
                     entity.getBillingCycle(),
                     entity.getBillingDate(),
                     entity.getSendReminder(),
                     entity.getNote()
+
             ));
         }
         return ResponseEntity.ok().body(subscriptionResponses);
@@ -68,7 +70,7 @@ public class SubscriptionController {
 
     }
     @PostMapping("/newSubscription")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> newSubscription(@Valid @RequestBody AddSubscription addSubscription) {
         System.out.println("triggered new subscription api");
 
@@ -81,6 +83,7 @@ public class SubscriptionController {
         subscription.setBillingDate(addSubscription.getBillingDate());
         subscription.setSendReminder(addSubscription.getSendReminder());
         subscription.setNote(addSubscription.getNote());
+        subscription.setCategory(addSubscription.getCategory());
         subscriptionRespository.save(subscription);
 
         return ResponseEntity.ok(new NewSubscriptionResponse("Subscription Added successfully!"));
@@ -88,7 +91,7 @@ public class SubscriptionController {
 
     }
     @PutMapping("/updateSubscription")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> updateSubscription(@Valid @RequestBody UpdateSubscription updateSubscription) {
         System.out.println("triggered update subscription api");
 
@@ -102,6 +105,7 @@ public class SubscriptionController {
             subscription.setBillingDate(updateSubscription.getBillingDate());
             subscription.setSendReminder(updateSubscription.getSendReminder());
             subscription.setNote(updateSubscription.getNote());
+            subscription.setCategory(updateSubscription.getCategory());
             subscriptionRespository.save(subscription);
 
             return ResponseEntity.ok(new NewSubscriptionResponse("Subscription Updated successfully!"));
@@ -111,7 +115,7 @@ public class SubscriptionController {
     }
 
     @DeleteMapping("/deleteSubscription/{id}")
-    @CrossOrigin(origins = "http://localhost:8101", allowCredentials = "true")
+    @CrossOrigin(origins = "http://localhost:8100", allowCredentials = "true")
     public ResponseEntity<?> deleteSubscription(@PathVariable Integer id) {
         System.out.println("triggered delete subscription api");
 

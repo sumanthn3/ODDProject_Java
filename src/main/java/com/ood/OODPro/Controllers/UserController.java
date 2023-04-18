@@ -36,7 +36,7 @@ public class UserController {
 	JwtTokenUtil jwtUtils;
 
 	@GetMapping("/getUserInfo")
-	@CrossOrigin(origins = "http://localhost:8101")
+	@CrossOrigin(origins = "http://localhost:8100")
 	public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
 		System.out.println("triggered user info api"+request.getCookies());
 

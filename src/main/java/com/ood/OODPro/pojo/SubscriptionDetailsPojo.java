@@ -22,12 +22,14 @@ public class SubscriptionDetailsPojo {
 
     private String note;
 
+    private String category;
     public SubscriptionDetailsPojo(String userId, String subscriptionName,
                                    Float subscriptionPrice,
                                    String billingCycle,
                                    Date billingDate,
                                    String sendReminder,
                                    String note,
+                                   String category,
                                    Collection<? extends GrantedAuthority> authorities
     ) {
 
@@ -38,5 +40,6 @@ public class SubscriptionDetailsPojo {
         this.billingDate = billingDate;
         this.sendReminder = sendReminder;
         this.note =note;
+        this.category=category;
     }
 }
