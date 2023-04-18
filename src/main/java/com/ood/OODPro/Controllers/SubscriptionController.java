@@ -57,10 +57,12 @@ public class SubscriptionController {
                     entity.getId(),
                     entity.getSubscriptionName(),
                     entity.getSubscriptionPrice(),
+                    entity.getCategory(),
                     entity.getBillingCycle(),
                     entity.getBillingDate(),
                     entity.getSendReminder(),
                     entity.getNote()
+
             ));
         }
         return ResponseEntity.ok().body(subscriptionResponses);
@@ -81,6 +83,7 @@ public class SubscriptionController {
         subscription.setBillingDate(addSubscription.getBillingDate());
         subscription.setSendReminder(addSubscription.getSendReminder());
         subscription.setNote(addSubscription.getNote());
+        subscription.setCategory(addSubscription.getCategory());
         subscriptionRespository.save(subscription);
 
         return ResponseEntity.ok(new NewSubscriptionResponse("Subscription Added successfully!"));
@@ -102,6 +105,7 @@ public class SubscriptionController {
             subscription.setBillingDate(updateSubscription.getBillingDate());
             subscription.setSendReminder(updateSubscription.getSendReminder());
             subscription.setNote(updateSubscription.getNote());
+            subscription.setCategory(updateSubscription.getCategory());
             subscriptionRespository.save(subscription);
 
             return ResponseEntity.ok(new NewSubscriptionResponse("Subscription Updated successfully!"));

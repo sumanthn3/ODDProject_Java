@@ -26,4 +26,7 @@ public class UpdateSubscription {
     private String sendReminder;
 
     private String note;
+
+
+    private String category;
 }
